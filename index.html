@@ -1,3 +1,4 @@
+<!-- Pre and post-processing functions from: https://github.com/AndreyGermanov/yolov8_onnx_javascript -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +11,12 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Hide overflow for full width */
+            overflow: hidden;
         }
 
         .video-container {
             position: relative;
-            width: 100%; /* Full width */
+            width: 100%;
             margin: 0 auto;
         }
 
@@ -23,8 +24,8 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%; /* Full width */
-            height: auto; /* Maintain aspect ratio */
+            width: 100%;
+            height: auto;
         }
 
         #canvas {
@@ -67,22 +68,19 @@
 
         async function processFrame() {
             offscreenContext.drawImage(video, 0, 0, 640, 640);
-            const boxes = await detect_objects_on_image(offscreenContext);
-            draw_image_and_boxes(offscreenCanvas, boxes);
-            setTimeout(function() {
-                processFrame()
-            }, 600);
-
+            const boxes = await detectObjectsOnFrame(offscreenContext);
+            drawBoxes(offscreenCanvas, boxes);
+            setTimeout(() => processFrame(), 600);
         }
 
         requestAnimationFrame(processFrame);
 
-        function draw_image_and_boxes(offscreenCanvas, boxes) {
+        function drawBoxes(offscreenCanvas, boxes) {
             const canvas = document.querySelector("canvas");
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.lineWidth = 3;
-            ctx.font = "18px serif";
+            ctx.font = "20px serif";
             const scaleX = canvas.width / 640;
             const scaleY = canvas.height / 640;
 
@@ -109,22 +107,17 @@
             });
         }
 
-        async function detect_objects_on_image(offscreenContext) {
+        async function detectObjectsOnFrame(offscreenContext) {
             if (!net) net = await loadNet();
             let start = performance.now();
             const [input,img_width,img_height] = await prepare_input(offscreenContext);
-            let end = performance.now() - start;
-            console.log("Preprocess took: " + end + " ms");
+            console.log("Preprocess took: " + (performance.now() - start) + " ms");
             start = performance.now();
             const output = await run_model(input);
-            end = performance.now() - start;
-            console.log("Inference took: " + end + " ms");
+            console.log("Inference took: " + (performance.now() - start) + " ms");
             start = performance.now();
             let out = process_output(output,img_width,img_height);
-
-            end = performance.now() - start;
-
-            console.log("Postprocess took: " + end + " ms");
+            console.log("Postprocess took: " + (performance.now() - start) + " ms");
             return out;
         }
 
@@ -150,7 +143,7 @@
         
         const getGlContext = () => {
             return document.createElement("canvas").getContext("webgl2");
-	    };
+	    }
         
         const loadNet = async () => {
             try {
