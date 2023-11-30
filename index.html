@@ -5,22 +5,26 @@
     <title>YOLOv8 tinygrad WebGL</title>
     <script src="./net.js"></script>
     <style>
-        body {
-            text-align: center; /* Center align the content */
-            font-family: Arial, sans-serif; /* Optional: Font style */
+       body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide overflow for full width */
         }
 
         .video-container {
             position: relative;
-            width: 480px;
-            height: 360px;
-            margin: 0 auto; /* Center the container */
+            width: 100%; /* Full width */
+            margin: 0 auto;
         }
 
         #video, #canvas {
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%; /* Full width */
+            height: auto; /* Maintain aspect ratio */
         }
 
         #canvas {
