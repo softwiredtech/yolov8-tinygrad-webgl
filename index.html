@@ -53,7 +53,6 @@
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(function (stream) {
                 video.srcObject = stream;
-                video.play();
             });
         }
 
