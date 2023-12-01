@@ -56,7 +56,8 @@
         const offscreenContext = offscreenCanvas.getContext('2d');
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(function (stream) {
+            navigator.mediaDevices.getUserMedia({ audio: false,  video: { facingMode: { exact: "environment" }}})
+            .then(function (stream) {
                 video.srcObject = stream;
                 video.onloadedmetadata = function() {
                     console.log("Width=" + video.width + ", height=" + video.height);
@@ -70,7 +71,7 @@
             offscreenContext.drawImage(video, 0, 0, 640, 640);
             const boxes = await detectObjectsOnFrame(offscreenContext);
             drawBoxes(offscreenCanvas, boxes);
-            setTimeout(() => processFrame(), 600);
+            requestAnimationFrame(processFrame);
         }
 
         requestAnimationFrame(processFrame);
@@ -80,7 +81,7 @@
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.lineWidth = 3;
-            ctx.font = "20px serif";
+            ctx.font = "30px serif";
             const scaleX = canvas.width / 640;
             const scaleY = canvas.height / 640;
 
@@ -102,8 +103,8 @@
                 const textWidth = ctx.measureText(label).width;
                 ctx.fillRect(adjustedX1, adjustedY1 - 25, textWidth + 10, 25);
 
-                ctx.fillStyle = "#000000";
-                ctx.fillText(label, adjustedX1, adjustedY1 - 7);
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillText(label, adjustedX1+10, adjustedY1 - 7);
             });
         }
 
